@@ -1,4 +1,5 @@
 //jshint esversion:6
+require('dotenv').config()
 const express = require("express")
 const bodyParser=require("body-parser")
 const ejs =require("ejs")
@@ -11,6 +12,7 @@ app.set('view engine','ejs')
 app.use(bodyParser.urlencoded({
     extended:true   
 }));
+console.log(process.env.SECRECT)
 mongoose.connect('mongodb://127.0.0.1:27017/userDB').then(function(){
     console.log("Database connected")
 }).catch(function(err){
@@ -21,8 +23,8 @@ const userSchema= new mongoose.Schema({
     email:String,
     password:String
 })
-const secret= "This is our little secrect littel "
-userSchema.plugin(encrypt,{secret:secret,encryptedFields:["password"]})
+
+userSchema.plugin(encrypt,{secret:process.env.SECRECT,encryptedFields:["password"]})
 const User =new mongoose.model("User",userSchema)
 app.get("/",function(req,res){
     res.render("home")
